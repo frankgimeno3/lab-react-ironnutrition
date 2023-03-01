@@ -1,23 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import foods from "./foods.json";
+import React, { useState } from "react";
+import FoodBox from "./components/FoodBox";
+import AddFoodForm from "./components/AddFoodForm";
+import SearchFood from "./components/SearchFood";
 
 function App() {
+  const [foodList, setFoodList] = useState(foods);
+  const createFood = (food) => {
+    setFoodList([...foodList, food]);
+  }
+  const searchfood = (text) => {
+    setFoodList(foodList.filter(food => food.name.toLowerCase().includes(text.toLowerCase())));
+  }
+  
+  const deleteHandler = (idFood)=>{
+    setFoodList(foodList.filter(foodbox => foodbox._id !== idFood)); //LIFT STATE UP
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <AddFoodForm createFood={createFood}/>
+      <SearchFood filter={searchfood}/>
+
+      {/* {foodList.map((food) => (
+        <div key={food.name}>
+          <p>{food.name}</p>
+          <img src={food.image} width={100} alt={food.name} />
+        </div>
+      ))} */}
+    
+    <div className="row mt-5 mb-3 mb-sm-0 w-50 mx-auto">
+      {foodList.map(food =>    <FoodBox food={food} deleteHandler={deleteHandler} key={food._id}/>)}
+    </div>
     </div>
   );
 }
